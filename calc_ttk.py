@@ -1,15 +1,15 @@
 import tkinter as tk
-
 import sv_ttk
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 window = tk.Tk()
 window.title("Calculator")
 window.geometry("320x500")
 window.configure(bg='white')
 
-style = ttk.Style()
-style.configure("TButton", borderwidth=0)
+# style = ttk.Style()
+# style.configure("TButton", borderwidth=0)
 
 # CONSTANTS
 BG_COLOR = 'white'
@@ -18,18 +18,20 @@ top_results_display = tk.StringVar()
 bottom_results_display = tk.StringVar(value="0")
 
 # images
-menu_img = tk.PhotoImage(file="C:/Projects/Resources/images/menubar.png")
+menu_img = tk.PhotoImage(file="C:/Projects/Resources/images/menubarlight.png")
 history_img = tk.PhotoImage(file="C:/Projects/Resources/images/history.png")
-resize_img = tk.PhotoImage(file="C:/Projects/Resources/images/resize.png")
+resize_img = tk.PhotoImage(file="C:/Projects/Resources/images/resizelight.png")
+equals = Image.open("C:/Projects/Resources/images/equals.png").resize((20, 20))
+equals_img = ImageTk.PhotoImage(equals)
 
 
 # FUNCTIONS
 def on_enter(event):
-    pass
+    event.widget.config(bg='#4a4242')
 
 
 def on_leave(event):
-    pass
+    event.widget.config(bg='#1c1b1b')
 
 
 def display_values(val):
@@ -73,20 +75,47 @@ def calculate():
             bottom_results_display.set('Cannot divide by zero')
 
 
+def menu():
+    def side_menu():
+        menu_frame.destroy()
+
+    # Side Panel Frame
+    menu_frame = ttk.Frame(window, width=250, height=495)
+    menu_frame.pack_propagate(False)
+    menu_frame.place(x=0, y=0)
+
+    # Menu Items
+    menu_btn_two = ttk.Button(menu_frame, image=menu_img, command=side_menu)
+    menu_btn_two.place(x=5, y=5)
+
+    # Buttons
+    std_btn = tk.Button(menu_frame, text='Standard', font=12)
+    std_btn.place(x=5, y=100, width=230)
+
+    sci_btn = tk.Button(menu_frame, text='Scientific', font=12)
+    sci_btn.place(x=5, y=135, width=230)
+
+    graph_btn = tk.Button(menu_frame, text='Graphing', font=12)
+    graph_btn.place(x=5, y=170, width=230)
+
+    pro_btn = tk.Button(menu_frame, text='Programming', font=12, bd=0, bg='grey')
+    pro_btn.place(x=5, y=205, width=230)
+
+
 # FRAME PARENTS
 # top frame
 top_frame = ttk.Frame(window)
 # top frame widgets
-menu_btn = ttk.Button(top_frame, image=menu_img)
+menu_btn = tk.Button(top_frame, image=menu_img, command=menu, bd=0)
 menu_btn.pack(side='left', padx=10)
 
 std_label = ttk.Label(top_frame, textvariable=std_text, font=("Helvetica", 15, "bold"))
 std_label.pack(side='left')
 
-resize_btn = ttk.Button(top_frame, image=resize_img)
+resize_btn = tk.Button(top_frame, image=resize_img, bd=0)
 resize_btn.pack(side='left', padx=20)
 
-history_btn = ttk.Button(top_frame, image=history_img)
+history_btn = tk.Button(top_frame, image=history_img, bd=0)
 history_btn.pack(side='right', padx=(0, 10))
 
 top_frame.pack(fill='x', pady=(5, 0))
@@ -106,17 +135,17 @@ results_frame.pack(fill='both', expand=True)
 memory_frame = ttk.Frame(window)
 
 buttons = [
-    ttk.Button(memory_frame, text='MC', style='TButton'),
-    ttk.Button(memory_frame, text='MR'),
-    ttk.Button(memory_frame, text='M+'),
-    ttk.Button(memory_frame, text='M-'),
-    ttk.Button(memory_frame, text='MS'),
-    ttk.Button(memory_frame, text='M▼')
+    tk.Button(memory_frame, text='MC', bd=0),
+    tk.Button(memory_frame, text='MR', bd=0),
+    tk.Button(memory_frame, text='M+', bd=0),
+    tk.Button(memory_frame, text='M-', bd=0),
+    tk.Button(memory_frame, text='MS', bd=0),
+    tk.Button(memory_frame, text='M▼', bd=0)
 ]
 
 # Pack and bind events for each button
 for btn in buttons:
-    btn.pack(side='left', expand=True, fill='both')
+    btn.pack(side='left', expand=True, fill='both', padx=1)
     btn.bind("<Enter>", on_enter)
     btn.bind("<Leave>", on_leave)
 
@@ -207,12 +236,11 @@ btn_0.grid(row=5, column=1, sticky='news')
 btn_dot = ttk.Button(digits_frame, text='.')
 btn_dot.grid(row=5, column=2, sticky='news')
 
-equal_btn = ttk.Button(digits_frame, text='=', command=calculate)
+equal_btn = tk.Button(digits_frame, image=equals_img, command=calculate, bg='#e6e343', fg='black')
 equal_btn.grid(row=5, column=3, sticky='news')
 
 for children in digits_frame.winfo_children():
     children.grid_configure(padx=1, pady=1)
-   
 
 digits_frame.pack(fill='both', expand=True)
 
